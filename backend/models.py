@@ -29,8 +29,6 @@ Base = declarative_base()
 class RentData(Base):
     __tablename__ = "rent_data"
 
-    id = Column(
-        Integer, primary_key=True, index=True, autoincrement=True
-    )  # ✅ Auto-increment fixed
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     neighborhood = Column(String, index=True)
     rent_price = Column(Integer)
