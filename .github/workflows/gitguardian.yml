@@ -11,7 +11,7 @@ jobs:
 
       - name: Set COMMIT_RANGE
         run: |
-          if [ `git rev-list --count HEAD` -gt 1 ]; then
+          if [ $(git rev-list --count HEAD) -gt 1 ]; then
             echo "COMMIT_RANGE=$(git rev-parse HEAD~1)..$(git rev-parse HEAD)" >> $GITHUB_ENV
           else
             echo "COMMIT_RANGE=$(git rev-parse HEAD)" >> $GITHUB_ENV
@@ -20,6 +20,6 @@ jobs:
       - name: Run GitGuardian scan
         uses: GitGuardian/ggshield-action@v1
         with:
-          args: secret scan commit-range ${{ env.COMMIT_RANGE }}
+          args: "ggshield secret scan commit-range ${{ env.COMMIT_RANGE }}"
         env:
           GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
