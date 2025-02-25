@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from backend.models import SessionLocal, RentData  # ✅ Absolute Import
-from schemas import RentDataSchema  # ✅ Import Pydantic schema
+from backend.schemas import RentDataSchema  # ✅ Absolute Import
 from typing import List
 
 app = FastAPI(
