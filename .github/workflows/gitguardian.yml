@@ -9,6 +9,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Install GitGuardian CLI
+        run: pip install ggshield
+
       - name: Set COMMIT_RANGE
         run: |
           if [ $(git rev-list --count HEAD) -gt 1 ]; then
@@ -18,8 +21,6 @@ jobs:
           fi
 
       - name: Run GitGuardian scan
-        uses: GitGuardian/ggshield-action@v1
-        with:
-          args: "ggshield secret scan commit-range ${{ env.COMMIT_RANGE }}"
+        run: ggshield secret scan commit-range ${{ env.COMMIT_RANGE }}
         env:
           GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
