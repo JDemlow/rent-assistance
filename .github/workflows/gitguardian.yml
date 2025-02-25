@@ -2,8 +2,10 @@ name: GitGuardian Scan
 on:
   push:
     branches:
-      - main
+      - "**" # Runs on all branches
   pull_request:
+    branches:
+      - "**"
 
 jobs:
   ggshield:
@@ -13,12 +15,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Get commit range for push
-        id: commit_range
         run: echo "COMMIT_RANGE=$(git rev-parse HEAD~1)..$(git rev-parse HEAD)" >> $GITHUB_ENV
         if: github.event_name == 'push'
 
       - name: Get commit range for pull request
-        id: pr_commit_range
         run: echo "COMMIT_RANGE=${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV
         if: github.event_name == 'pull_request'
 
