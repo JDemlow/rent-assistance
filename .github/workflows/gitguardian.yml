@@ -1,0 +1,30 @@
+name: GitGuardian Scan
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  ggshield:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Get commit range for push
+        id: commit_range
+        run: echo "COMMIT_RANGE=$(git rev-parse HEAD~1)..$(git rev-parse HEAD)" >> $GITHUB_ENV
+        if: github.event_name == 'push'
+
+      - name: Get commit range for pull request
+        id: pr_commit_range
+        run: echo "COMMIT_RANGE=${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV
+        if: github.event_name == 'pull_request'
+
+      - name: Run GitGuardian Scan on Changed Files
+        uses: GitGuardian/ggshield-action@v1
+        env:
+          GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
+        with:
+          args: secret scan commit-range ${{ env.COMMIT_RANGE }}
