@@ -9,10 +9,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install GitGuardian CLI
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - name: Install ggshield
         run: pip install ggshield
 
-      - name: Set COMMIT_RANGE
+      - name: Set GitGuardian API Key
+        run: echo "GITGUARDIAN_API_KEY=${{ secrets.GITGUARDIAN_API_KEY }}" >> $GITHUB_ENV
+
+      - name: Set Commit Range
         run: |
           if [ $(git rev-list --count HEAD) -gt 1 ]; then
             echo "COMMIT_RANGE=$(git rev-parse HEAD~1)..$(git rev-parse HEAD)" >> $GITHUB_ENV
@@ -20,7 +28,7 @@ jobs:
             echo "COMMIT_RANGE=$(git rev-parse HEAD)" >> $GITHUB_ENV
           fi
 
-      - name: Run GitGuardian scan
-        run: ggshield secret scan commit-range ${{ env.COMMIT_RANGE }}
+      - name: Run GitGuardian Scan
+        run: ggshield secret scan commit-range $COMMIT_RANGE
         env:
           GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
